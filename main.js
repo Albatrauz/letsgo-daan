@@ -15,6 +15,7 @@ button.addEventListener("click", () => {
   playMusic();
   jsConfetti.addConfetti({
     emojis: ["🐔", "🥚"],
+    confettiNumber: 180,
   });
 });
 
