@@ -1,26 +1,26 @@
-import "./style.css";
-import JSConfetti from "js-confetti";
+import './style.css';
+import JSConfetti from 'js-confetti';
 
 const jsConfetti = new JSConfetti();
 
-const audioFile = "./audio/chickienuggie.mp3";
+const audioFile = './audio/chickienuggie.mp3';
 function playMusic() {
   const music = new Audio(audioFile);
   music.play();
 }
 
-let button = document.querySelector(".button");
+let button = document.querySelector('.button');
 
-button.addEventListener("click", () => {
+button.addEventListener('click', () => {
   playMusic();
   jsConfetti.addConfetti({
-    emojis: ["🐔", "🥚"],
+    emojis: ['🐔', '🥚'],
     confettiNumber: 180,
   });
 });
 
 // Set the date we're counting down to
-var countDownDate = new Date("May 19, 2023 00:00:00").getTime();
+var countDownDate = new Date('May 19, 2023 00:00:00').getTime();
 
 // Update the count down every 1 second
 var x = setInterval(function () {
@@ -37,12 +37,12 @@ var x = setInterval(function () {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   // Display the result in the element with id="demo"
-  document.getElementById("time").innerHTML =
-    days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+  document.getElementById('time').innerHTML =
+    days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
 
   // If the count down is finished, write some text
   if (distance < 0) {
     clearInterval(x);
-    document.getElementById("demo").innerHTML = "EXPIRED";
+    document.getElementById('demo').innerHTML = 'EXPIRED';
   }
 }, 1000);
