@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
   font-family: 'Questrial', sans-serif;
   position: relative;
   background-color: #FFF89A;
+}
+
+body.game {
+  font-family: 'Press Start 2P', cursive;
 }
 #app {
   width: 100%;
@@ -93,4 +98,35 @@ img {
   cursor: pointer;
   background-color: #29299c;
   scale: 1.1;
+}
+
+
+.startgame {
+  z-index: 12;
+  position: absolute;
+  bottom: 10px;
+  padding: 20px;
+  background: #86561f;
+  color: #FFF89A;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-left {
+  position: absolute;
+  z-index: 10;
+  bottom: 20px;
+  left: 10px;
+  height: 50px;
+  width: 50px;
+  background: url('images/arrow-left.png');
+}
+.arrow-right {
+  position: absolute;
+  z-index: 10;
+  bottom: 20px;
+  right: 10px;
+  height: 50px;
+  width: 50px;
+  background: url('images/arrow-right.png');
 }

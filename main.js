@@ -4,9 +4,19 @@ import JSConfetti from 'js-confetti';
 const jsConfetti = new JSConfetti();
 
 const audioFile = './audio/chickienuggie.mp3';
-function playMusic() {
-  const music = new Audio(audioFile);
+const gameAudioFile = './audio/game-song.mp3';
+
+const musicGame = new Audio(gameAudioFile);
+function playMusic(file) {
+  const music = new Audio(file);
   music.play();
+}
+function playMusicGame() {
+  musicGame.play();
+}
+function pauseMusicGame() {
+  musicGame.pause();
+  musicGame.currentTime = 0;
 }
 
 let button = document.querySelector('.button');
@@ -14,7 +24,7 @@ let button = document.querySelector('.button');
 if (button) {
 
   button.addEventListener('click', () => {
-    playMusic();
+    playMusic(audioFile);
     jsConfetti.addConfetti({
       emojis: ['🐔', '🥚'],
       confettiNumber: 180,
@@ -56,13 +66,28 @@ if (time) {
 window.onload = function(){
   const canvas = document.getElementById("canvas");
   if (canvas) {
-
     var context = canvas.getContext("2d");
     var canvasBack = document.getElementById("backgroundCanvas");
     var contextBack = canvasBack.getContext("2d");
+    const arrowLeft = document.querySelector('.arrow-left')
+    const arrowRight = document.querySelector('.arrow-right')
+    const startButton = document.querySelector('.startgame');
+    let previousHiScoreNumber = 0;
 
-    canvas.width = window.innerWidth - 20;
-    canvas.height = window.innerHeight - 20;
+    // Check if hiscore is set
+    if (localStorage.getItem("hiscore") !== null) {
+      const previousHiScore = window.localStorage.getItem('hiscore');
+      previousHiScoreNumber = parseInt(previousHiScore);
+    } else {
+      window.localStorage.setItem('hiscore', '0');
+    }
+
+    context.beginPath();
+    context.rect(20, 20, 300, 50);
+    context.stroke();
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     canvasBack.width = window.innerWidth;
     canvasBack.height = window.innerHeight;
 
@@ -75,7 +100,6 @@ window.onload = function(){
     // var background = new Image();
     // background.src = 'images/back.jpg';
 
-
     var player;
     var fruits = [];
     var numberOfFruits = 15;
@@ -87,13 +111,13 @@ window.onload = function(){
       this.score = 0;
       this.fruitsCollected = 0;
       this.fruitsMissed = 0;
-      this.playerWidth = 150;
-      this.playerHeight = 90;
-      this.playerSpeed = 10;
+      this.playerWidth = 80;
+      this.playerHeight = 120;
+      this.playerSpeed = 20;
       this.x = canvas.width / 2;
-      this.y = canvas.height - 320;
+      this.y = canvas.height - 200;
       this.playerImage = new Image();
-      this.playerImage.src = 'images/basket2.png';
+      this.playerImage.src = 'images/player.png';
 
       //Draws the player
       this.render = function()
@@ -131,7 +155,7 @@ window.onload = function(){
       this.fruitImage = new Image();
       this.fruitSpeed = Math.floor(Math.random() * 3 + 1);
       this.x = Math.random() * (canvas.width - this.fruitWidth);
-      this.y = Math.random() * -canvas.height - this.fruitHeight;
+      this.y = Math.random() * (-canvas.height - this.fruitHeight);
 
       //Creates a different kind of fruit depending on the fruit number
       //which is generated randomly
@@ -141,13 +165,13 @@ window.onload = function(){
         {
           this.fruitType = "banana";
           this.fruitScore = 5 * this.fruitSpeed;
-          this.fruitImage.src = 'images/banana2.png';
+          this.fruitImage.src = 'images/pizza.png';
         }
         else if(this.fruitNumber == 1)
         {
           this.fruitType = "apple";
           this.fruitScore = 10 * this.fruitSpeed;
-          this.fruitImage.src = 'images/apple2.png';
+          this.fruitImage.src = 'images/beer.png';
         }
         else if(this.fruitNumber == 2)
         {
@@ -165,14 +189,14 @@ window.onload = function(){
         {
           this.fruitType = "melon";
           this.fruitScore = 25 * this.fruitSpeed;
-          this.fruitImage.src = 'images/melon2.png';
+          this.fruitImage.src = 'images/beer.png';
         }
       }
 
 
       this.fall = function()
       {
-        if(this.y < canvas.height - this.fruitHeight)
+        if(this.y < canvas.height - 150)
         {
           this.y += this.fruitSpeed;
         }
@@ -222,25 +246,14 @@ window.onload = function(){
       }
     }
 
-    //Adds controls. Left arrow to move left, right arrow to move right.
-    //ENTER to restart only works at the game over screen.
-    window.addEventListener("keydown", function(e)
-    {
+    arrowLeft.addEventListener('click', (e) => {
       e.preventDefault();
-      if(e.keyCode == 37)
-      {
-        player.moveLeft();
-      }
-      else if(e.keyCode == 39)
-      {
-        player.moveRight();
-      }
-      else if(e.keyCode == 13 && player.gameOver == true)
-      {
-        main();
-        window.clearTimeout(timer);
-      }
-    });
+      player.moveLeft();
+    })
+    arrowRight.addEventListener('click', (e) => {
+      e.preventDefault();
+      player.moveRight();
+    })
 
     main();
 
@@ -259,11 +272,15 @@ window.onload = function(){
         fruits.push(fruit);
       }
 
-      startGame();
+      startButton.addEventListener('click', () => {
+        startGame();
+        startButton.style.display = 'none';
+      })
     }
 
     function startGame()
     {
+      playMusicGame();
       updateGame();
       window.requestAnimationFrame(drawGame);
     }
@@ -271,9 +288,10 @@ window.onload = function(){
     function updateGame()
     {
 
-      if(player.fruitsMissed >= 10)
+      if(player.fruitsMissed >= 1)
       {
         player.gameOver = true;
+        pauseMusicGame();
       }
 
       for(var j = 0; j < fruits.length; j++)
@@ -286,40 +304,44 @@ window.onload = function(){
     //Draws the player and fruits on the screen as well as info in the HUD.
     function drawGame()
     {
-      if(player.gameOver == false)
+      if(player.gameOver === false)
       {
         context.clearRect(0, 0, canvas.width, canvas.height);
         contextBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
-
-        // contextBack.drawImage(background, 0, 0);
         player.render();
 
         for(var j = 0; j < fruits.length; j++)
         {
           fruits[j].render();
         }
-        contextBack.fillText("SCORE: " + player.score, 50, 50);
-        contextBack.fillText("HI SCORE: " + hiscore, 250, 50);
-        contextBack.fillText("FRUIT CAUGHT: " + player.fruitsCollected, 500, 50);
-        contextBack.fillText("FRUIT MISSED: " + player.fruitsMissed, 780, 50);
+        contextBack.fillText("SCORE: " + player.score, 10, 40);
+        if (previousHiScoreNumber) {
+          contextBack.fillText("HI SCORE: " + previousHiScoreNumber, canvas.width - 170, 40);
+        } else {
+          contextBack.fillText("HI SCORE: " + hiscore, 200, 40);
+        }
+        // contextBack.fillText("FRUIT CAUGHT: " + player.fruitsCollected, 500, 50);
+        // contextBack.fillText("FRUIT MISSED: " + player.fruitsMissed, 780, 50);
+        contextBack.fillStyle = 'blue';
       }
       else
       {
         //Different screen for game over.
         for(var i = 0; i < numberOfFruits; i++)
         {
-          console.log("Speed was" + fruits[fruits.length - 1].fruitSpeed);
           fruits.pop();
         }
 
-        if(hiscore < player.score)
-        {
-          hiscore = player.score;
-          contextBack.fillText("NEW HI SCORE: " + hiscore, (canvas.width / 2) - 100, canvas.height / 2);
+        if (player.score >= previousHiScoreNumber) {
+          contextBack.fillText("NIEUWE HIGHSCORE: " + player.score, (canvas.width / 2) - 150, canvas.height / 3);
+          contextBack.fillText("PRESS ENTER TO RESTART", (canvas.width / 2) - 140, canvas.height / 3 + 50);
+          window.localStorage.setItem('hiscore', player.score);
+          context.clearRect(0, 0, canvas.width, canvas.height);
+        } else {
+          contextBack.fillText("JOUW SCORE: " + player.score, (canvas.width / 2) - 100, canvas.height / 3);
+          contextBack.fillText("PRESS ENTER TO RESTART", (canvas.width / 2) - 140, canvas.height / 3 + 50);
+          context.clearRect(0, 0, canvas.width, canvas.height);
         }
-        contextBack.fillText("PRESS ENTER TO RESTART", (canvas.width / 2) - 140, canvas.height / 2 + 50);
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
       }
       window.requestAnimationFrame(drawGame);
 
