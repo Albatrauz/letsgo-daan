@@ -140,7 +140,8 @@ body.game {
   left: 10px;
   height: 50px;
   width: 50px;
-  background: url('images/arrow-left.png');
+  background: url(/images/arrow-left.png);
+  user-select: none
 }
 .arrow-right {
   position: absolute;
@@ -149,7 +150,8 @@ body.game {
   right: 10px;
   height: 50px;
   width: 50px;
-  background: url('images/arrow-right.png');
+  background: url(/images/arrow-right.png);
+  user-select: none
 }
 
 .logo {
