@@ -163,21 +163,21 @@ window.onload = function(){
       {
         if(this.fruitNumber == 0)
         {
-          this.fruitType = "banana";
+          this.fruitType = "pizza";
           this.fruitScore = 5 * this.fruitSpeed;
           this.fruitImage.src = 'images/pizza.png';
         }
         else if(this.fruitNumber == 1)
         {
-          this.fruitType = "apple";
+          this.fruitType = "beer";
           this.fruitScore = 10 * this.fruitSpeed;
           this.fruitImage.src = 'images/beer.png';
         }
         else if(this.fruitNumber == 2)
         {
-          this.fruitType = "orange";
+          this.fruitType = "chicken";
           this.fruitScore = 15 * this.fruitSpeed;
-          this.fruitImage.src = 'images/orange2.png';
+          this.fruitImage.src = 'images/chicken.png';
         }
         else if(this.fruitNumber == 3)
         {
@@ -344,7 +344,6 @@ window.onload = function(){
         }
       }
       window.requestAnimationFrame(drawGame);
-
     }
   }
 }
