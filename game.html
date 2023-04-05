@@ -6,13 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <style>
-        body {
 
-            margin: 0;
-            position: relative;
-            height: 100svh;
-            width: 100svw;
-        }
 		canvas
 		{
             position: absolute;
@@ -31,10 +25,15 @@
 
     <script type="module" src="/main.js"></script>
     <body class="game">
+        <div class="loader">
+            <div class="image1"></div>
+        </div>
         <canvas id="backgroundCanvas"></canvas>
         <canvas id="canvas"></canvas>
-        <div class="startgame">Start</div>
         <div class="arrow-left"></div>
+        <div class="startgame"></div>
+        <div class="replay-button"></div>
         <div class="arrow-right" onclick=""></div>
+        <div class="logo"></div>
     </body>
 </html>

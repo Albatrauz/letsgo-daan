@@ -62,8 +62,18 @@ if (time) {
     }
   }, 1000);
 }
+document.addEventListener("readystatechange", (event) => {
+  if (document.readyState !== "complete") {
+    document.getElementsByTagName("BODY")[0].style.visibility = "hidden";
+    document.querySelector(".loader").style.visibility = "visible";
+  } else {
+    document.querySelector(".loader").style.display = "none";
+    document.getElementsByTagName("BODY")[0].style.visibility = "visible";
+    runGame();
+  }
+});
 
-window.onload = function(){
+function runGame() {
   const canvas = document.getElementById("canvas");
   if (canvas) {
     var context = canvas.getContext("2d");
@@ -72,6 +82,11 @@ window.onload = function(){
     const arrowLeft = document.querySelector('.arrow-left')
     const arrowRight = document.querySelector('.arrow-right')
     const startButton = document.querySelector('.startgame');
+    startButton.innerHTML = 'Start'
+    const logo = document.querySelector('.logo');
+
+    const replayButton = document.querySelector('.replay-button');
+    replayButton.innerHTML = 'Probeer opnieuw'
     let previousHiScoreNumber = 0;
 
     // Check if hiscore is set
@@ -181,15 +196,9 @@ window.onload = function(){
         }
         else if(this.fruitNumber == 3)
         {
-          this.fruitType = "pineapple";
+          this.fruitType = "nugget";
           this.fruitScore = 20 * this.fruitSpeed;
-          this.fruitImage.src = 'images/pineapple2.png';
-        }
-        else if(this.fruitNumber == 4)
-        {
-          this.fruitType = "melon";
-          this.fruitScore = 25 * this.fruitSpeed;
-          this.fruitImage.src = 'images/beer.png';
+          this.fruitImage.src = 'images/nugget.png';
         }
       }
 
@@ -218,8 +227,6 @@ window.onload = function(){
           if((this.x > player.x && this.x < (player.x + player.playerWidth)) ||
               (this.x + this.fruitWidth > player.x && this.x + this.fruitWidth < (player.x + player.playerWidth)))
           {
-
-
             player.score += this.fruitScore;
             player.fruitsCollected += 1;
 
@@ -255,6 +262,19 @@ window.onload = function(){
       player.moveRight();
     })
 
+    replayButton.addEventListener('click', () => {
+      if (localStorage.getItem("hiscore") !== null) {
+        const previousHiScore = window.localStorage.getItem('hiscore');
+        previousHiScoreNumber = parseInt(previousHiScore);
+      } else {
+        window.localStorage.setItem('hiscore', '0');
+      }
+      main();
+      window.clearTimeout(timer);
+      replayButton.style.display = 'none';
+      startGame();
+    });
+
     main();
 
     //Fills an array of fruits, creates a player and starts the game
@@ -275,12 +295,19 @@ window.onload = function(){
       startButton.addEventListener('click', () => {
         startGame();
         startButton.style.display = 'none';
+        logo.style.display = 'none';
+        replayButton.style.display = 'none';
       })
     }
 
     function startGame()
     {
+      if (player.score >= previousHiScoreNumber) {
+        window.localStorage.setItem('hiscore', player.score);
+      }
       playMusicGame();
+      contextBack.fillText("HI SCORE: " + previousHiScoreNumber, canvas.width - 170, 40);
+
       updateGame();
       window.requestAnimationFrame(drawGame);
     }
@@ -288,7 +315,7 @@ window.onload = function(){
     function updateGame()
     {
 
-      if(player.fruitsMissed >= 1)
+      if(player.fruitsMissed >= 10)
       {
         player.gameOver = true;
         pauseMusicGame();
@@ -316,9 +343,9 @@ window.onload = function(){
         }
         contextBack.fillText("SCORE: " + player.score, 10, 40);
         if (previousHiScoreNumber) {
-          contextBack.fillText("HI SCORE: " + previousHiScoreNumber, canvas.width - 170, 40);
+          contextBack.fillText("HI SCORE: " + previousHiScoreNumber, canvas.width - 200, 40);
         } else {
-          contextBack.fillText("HI SCORE: " + hiscore, 200, 40);
+          contextBack.fillText("HI SCORE: " + hiscore, canvas.width - 200, 40);
         }
         // contextBack.fillText("FRUIT CAUGHT: " + player.fruitsCollected, 500, 50);
         // contextBack.fillText("FRUIT MISSED: " + player.fruitsMissed, 780, 50);
@@ -334,12 +361,12 @@ window.onload = function(){
 
         if (player.score >= previousHiScoreNumber) {
           contextBack.fillText("NIEUWE HIGHSCORE: " + player.score, (canvas.width / 2) - 150, canvas.height / 3);
-          contextBack.fillText("PRESS ENTER TO RESTART", (canvas.width / 2) - 140, canvas.height / 3 + 50);
+          replayButton.style.display = 'block';
           window.localStorage.setItem('hiscore', player.score);
           context.clearRect(0, 0, canvas.width, canvas.height);
         } else {
           contextBack.fillText("JOUW SCORE: " + player.score, (canvas.width / 2) - 100, canvas.height / 3);
-          contextBack.fillText("PRESS ENTER TO RESTART", (canvas.width / 2) - 140, canvas.height / 3 + 50);
+          replayButton.style.display = 'block';
           context.clearRect(0, 0, canvas.width, canvas.height);
         }
       }
@@ -347,3 +374,4 @@ window.onload = function(){
     }
   }
 }
+
