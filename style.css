@@ -52,10 +52,15 @@ img {
   top: 50%;
   left: 50%;
   transform:translate(-50%, -50%);
-
 }
 
-.button {
+
+.done {
+  text-align: center;
+}
+
+
+.button, .button2 {
   background-color: #1d1d8a;
   position: absolute;
   top: 24px;
@@ -69,7 +74,7 @@ img {
 }
 
 @media only screen and (max-width: 600px) {
-  .button {
+  .button, .button2 {
     left: 50%;
     padding: 16px 24px;
     text-align: center;
@@ -94,7 +99,7 @@ img {
   }
 }
 
-.button:hover {
+.button:hover, .button2:hover {
   cursor: pointer;
   background-color: #29299c;
   scale: 1.1;

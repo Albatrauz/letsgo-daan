@@ -5,6 +5,7 @@ const jsConfetti = new JSConfetti();
 
 const audioFile = './audio/chickienuggie.mp3';
 const gameAudioFile = './audio/game-song.mp3';
+const weddingSong = './audio/song2.mp3'
 
 const musicGame = new Audio(gameAudioFile);
 function playMusic(file) {
@@ -20,9 +21,11 @@ function pauseMusicGame() {
 }
 
 let button = document.querySelector('.button');
+let button2 = document.querySelector('.button2');
+
+button2.style.display = 'none'; 
 
 if (button) {
-
   button.addEventListener('click', () => {
     playMusic(audioFile);
     jsConfetti.addConfetti({
@@ -32,8 +35,14 @@ if (button) {
   });
 }
 
+if (button2) {
+  button2.addEventListener('click', () => {
+    playMusic(weddingSong);
+  });
+}
+
 // Set the date we're counting down to
-var countDownDate = new Date('May 19, 2023 00:00:00').getTime();
+var countDownDate = new Date('May 19, 2023 13:30:00').getTime();
 const time = document.getElementById('time');
 
 if (time) {
@@ -55,10 +64,24 @@ if (time) {
     time.innerHTML =
         days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
 
+    const grandFinale = () => {
+      jsConfetti.addConfetti({
+        confettiColors: [
+          '#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#fbb1bd', '#f9bec7',
+        ],
+        confettiNumber: 1200,
+      });
+    }
     // If the count down is finished, write some text
     if (distance < 0) {
       clearInterval(x);
-      document.getElementById('demo').innerHTML = 'EXPIRED';
+      button.style.display = 'none'
+      button2.style.display = 'block'
+      document.getElementById('time').classList.add('done')
+      document.getElementById('time').innerHTML = 'Daan & Danielle, van harte gefeliciteerd! <br/> Geniet ervan!';
+      setInterval(() => {
+        grandFinale();
+      }, 2000);
     }
   }, 1000);
 }
